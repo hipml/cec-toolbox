@@ -43,6 +43,9 @@ case "$COMMAND" in
     "input")
         switch_input "${2}.0.0.0"
         ;;
+    "get-input")
+        get_physical_address | cut -d "." -f 1
+        ;;
     "address")
         get_physical_address
         ;;
