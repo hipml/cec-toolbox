@@ -10,6 +10,8 @@ disable-services:
 	systemctl disable cec-toolbox-poweroff || true
 
 install:
+	mkdir -p $(PREFIX)/usr/bin
+	mkdir -p $(PREFIX)/usr/lib/systemd/system
 	install -Dm755 cec-toolbox $(PREFIX)/usr/bin/cec-toolbox
 	install -Dm644 systemd/*.service $(PREFIX)/usr/lib/systemd/system/
 
