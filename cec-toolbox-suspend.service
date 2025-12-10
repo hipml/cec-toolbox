@@ -1,0 +1,11 @@
+[Unit]
+Description=Turn the TV off when going to sleep/turning off PC
+Before=sleep.target hybrid-sleep.target shutdown.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=no
+ExecStart=/usr/bin/cec-toolbox off
+
+[Install]
+WantedBy=shutdown.target sleep.target
