@@ -2,7 +2,7 @@ enable-services:
 	systemctl daemon-reload
 	systemctl reenable cec-toolbox-wakeup
 	systemctl reenable cec-toolbox-suspend
-	systemctl reenable cec-toolbox-poweroff
+	systemctl reenable cec-toolbox-poweroff --now
 
 disable-services:
 	systemctl disable cec-toolbox-wakeup || true

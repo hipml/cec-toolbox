@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SCRIPT_NAME="cec-toolbox"
+# SCRIPT_NAME="cec-toolbox"
 DEVICE_NAME="PC"
 EXE="cec-ctl -st0"
 COMMAND=$1
