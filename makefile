@@ -1,4 +1,5 @@
 enable-services:
+	systemctl daemon-reload
 	systemctl enable cec-toolbox-wakeup
 	systemctl enable cec-toolbox-suspend
 
