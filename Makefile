@@ -3,7 +3,7 @@ enable-services:
 	systemctl reenable cec-toolbox-input --now
 	systemctl reenable cec-toolbox-wakeup
 	systemctl reenable cec-toolbox-suspend
-	systemctl reenable cec-toolbox-poweroff --now
+	systemctl reenable cec-toolbox-poweroff
 
 disable-services:
 	systemctl disable cec-toolbox-input || true
