@@ -34,12 +34,22 @@ tv_off() {
     [[ "$(get_tv_state)" -ne 0 ]] && $EXE --standby
 }
 
+poweroff() {
+    /usr/bin/systemctl list-jobs |
+        grep -e 'reboot.target.*start' &&
+        echo "Rebooting, skip TV standby" ||
+        tv_off
+}
+
 case "$COMMAND" in
     "on")
         tv_on
         ;;
     "off")
         tv_off
+        ;;
+    "poweroff")
+        poweroff
         ;;
     "input")
         switch_input "${2}.0.0.0"

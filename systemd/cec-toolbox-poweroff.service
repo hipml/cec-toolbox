@@ -6,7 +6,7 @@ After=multi-user.target
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=/usr/bin/true
-ExecStop=/usr/bin/cec-toolbox off
+ExecStop=/usr/bin/cec-toolbox poweroff
 
 [Install]
 WantedBy=multi-user.target
