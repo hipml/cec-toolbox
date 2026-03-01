@@ -2,7 +2,12 @@
 
 # SCRIPT_NAME="cec-toolbox"
 DEVICE_NAME="PC"
-EXE="cec-ctl -st0"
+CEC_DEV=$(ls /dev/cec* 2>/dev/null | head -1)
+if [[ -z "$CEC_DEV" ]]; then
+    echo "No CEC device found" >&2
+    exit 1
+fi
+EXE="cec-ctl -d $CEC_DEV -st0"
 COMMAND=$1
 
 configure_playback() {
