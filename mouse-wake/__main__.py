@@ -6,10 +6,14 @@ from selectors import DefaultSelector, EVENT_READ
 from evdev import InputDevice, ecodes as e, list_devices
 
 COOLDOWN = 0.5
+GAMEPAD_CHECK_INTERVAL = 3  # seconds between gamepad connection scans
 
 # Device names to exclude — these report EV_REL but aren't real mice
 EXCLUDED_NAMES = {"CEC-toolbox Virtual Input"}
 EXCLUDED_PREFIXES = ("DP-",)
+
+# Case-insensitive substrings to identify gamepads worth watching
+GAMEPAD_NAME_PATTERNS = ("xbox",)
 
 
 def find_mice():
@@ -29,6 +33,21 @@ def find_mice():
         except Exception:
             continue
     return mice
+
+
+def find_gamepads():
+    gamepads = []
+    for path in list_devices():
+        try:
+            dev = InputDevice(path)
+            name_lower = dev.name.lower()
+            if any(p in name_lower for p in GAMEPAD_NAME_PATTERNS):
+                gamepads.append(dev)
+            else:
+                dev.close()
+        except Exception:
+            continue
+    return gamepads
 
 
 def tv_is_off():
@@ -51,6 +70,7 @@ def tv_on():
 
 def main_loop():
     last_cec_check = 0
+    last_gamepad_check = 0
 
     mice = find_mice()
     if not mice:
@@ -63,9 +83,15 @@ def main_loop():
     for mouse in mice:
         selector.register(mouse, EVENT_READ)
 
+    # Snapshot gamepads already connected at startup so we only wake on new connections
+    known_gamepad_paths = set()
+    for gp in find_gamepads():
+        known_gamepad_paths.add(gp.path)
+        gp.close()
+
     try:
         while True:
-            for key, _ in selector.select():
+            for key, _ in selector.select(timeout=GAMEPAD_CHECK_INTERVAL):
                 device = key.fileobj
                 try:
                     events = list(device.read())
@@ -88,6 +114,18 @@ def main_loop():
                     if tv_is_off():
                         print("TV is off, turning on")
                         tv_on()
+
+            now = time.time()
+            if (now - last_gamepad_check) > GAMEPAD_CHECK_INTERVAL:
+                last_gamepad_check = now
+                for gp in find_gamepads():
+                    if gp.path not in known_gamepad_paths:
+                        known_gamepad_paths.add(gp.path)
+                        print(f"Gamepad connected: {gp.name}")
+                        if tv_is_off():
+                            print("TV is off, turning on")
+                            tv_on()
+                    gp.close()
     finally:
         selector.close()
 
