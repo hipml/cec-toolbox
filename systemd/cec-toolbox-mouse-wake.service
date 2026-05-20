@@ -8,6 +8,8 @@ RemainAfterExit=no
 ExecStart=/usr/bin/env python3 /usr/share/cec-toolbox/mouse-wake
 Restart=on-failure
 RestartSec=5
+StartLimitBurst=5
+StartLimitIntervalSec=60
 
 [Install]
 WantedBy=multi-user.target
